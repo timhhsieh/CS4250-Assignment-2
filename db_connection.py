@@ -16,7 +16,7 @@ import psycopg2
 db_params = {
     "dbname": "Assignment 2",
     "user": "postgres",
-    "password": "123",
+    "password": "Erwmbf4f",
     "host": "localhost",
     "port": "5432"
 }
@@ -51,19 +51,19 @@ def createDocument(cur, docId, docText, docTitle, docDate, docCat):
         catId = cur.fetchone()[0]
 
         # 2. Insert the document into the database
-        cur.execute("INSERT INTO public.\"Documents\" (doc_id, num_chars, text, title, doc_date, category_id) VALUES (%s, %s, %s, %s, %s, %s);", (docId, len(docText), docText, docTitle, docDate, catId))
+        cur.execute("INSERT INTO public.\"Documents\" (doc_id, category_id, num_chars, text, title, date) VALUES (%s, %s, %s, %s, %s, %s);", (int(docId), int(catId), len(docText), docText, docTitle, docDate))
 
         # 3. Update the potential new terms
         terms = set([term.strip('.,!?').lower() for term in docText.split()])
         for term in terms:
-            cur.execute("INSERT INTO public.\"Terms\" (term_text) VALUES (%s) ON CONFLICT (term_text) DO NOTHING;", (term,))
+            cur.execute("INSERT INTO public.\"Terms\" (term) VALUES (%s);", (term,))
 
         # 4. Update the index
         term_counts = {}
         for term in terms:
             term_counts[term] = term_counts.get(term, 0) + 1
         for term, count in term_counts.items():
-            cur.execute("INSERT INTO public.\"Document Terms\" (doc_id, term_id, count) VALUES (%s, (SELECT term_id FROM public.\"Terms\" WHERE term_text = %s), %s);", (docId, term, count))
+            cur.execute("INSERT INTO public.\"Document Terms\" (doc_id, term_id) VALUES (%s, (SELECT term_id FROM public.\"Terms\" WHERE term = %s), %s);", (docId, term))
 
     except Exception as e:
         print("Error: Unable to create a document.")
@@ -72,7 +72,7 @@ def createDocument(cur, docId, docText, docTitle, docDate, docCat):
 def deleteDocument(cur, docId):
     try:
         # 1. Query the index based on the document to identify terms
-        cur.execute("SELECT term_id, count FROM public.\"Document Terms\" WHERE doc_id = %s;", (docId,))
+        cur.execute("SELECT term_id FROM public.\"Document Terms\" WHERE doc_id = %s;", (docId,))
         term_counts = cur.fetchall()
         for term_id, count in term_counts:
             cur.execute("UPDATE public.\"Document Terms\" SET count = count - %s WHERE term_id = %s;", (count, term_id))
