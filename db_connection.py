@@ -3,7 +3,7 @@
 # FILENAME: db_connection.py
 # SPECIFICATION: Creating an inverted index 
 # FOR: CS 4250- Assignment #2
-# TIME SPENT: 5 hours
+# TIME SPENT: 7 hours
 #-----------------------------------------------------------*/
 
 #IMPORTANT NOTE: DO NOT USE ANY ADVANCED PYTHON LIBRARY TO COMPLETE THIS CODE SUCH AS numpy OR pandas. You have to work here only with
@@ -16,7 +16,7 @@ import psycopg2
 db_params = {
     "dbname": "Assignment 2",
     "user": "postgres",
-    "password": "Erwmbf4f",
+    "password": "123",
     "host": "localhost",
     "port": "5432"
 }

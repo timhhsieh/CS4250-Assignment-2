@@ -3,7 +3,7 @@
 # FILENAME: index.py
 # SPECIFICATION: Creating an inverted index 
 # FOR: CS 4250- Assignment #2
-# TIME SPENT: 5 hours
+# TIME SPENT: 7 hours
 #-----------------------------------------------------------*/
 
 #importing some Python libraries
